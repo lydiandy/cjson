@@ -1,23 +1,30 @@
 module cjson
 
-import json
-//just to avoid the warning
-struct UseJson { x int }
-fn suppress_json_warning(){ json.encode(UseJson{}) }
+#flag -I @VROOT/thirdparty/cJSON
+#flag @VROOT/thirdparty/cJSON/cJSON.o
+#include "cJSON.h"
+
+pub struct C.cJSON {
+pub:
+	@type int
+	valueint    int
+	valuedouble f32
+	valuestring byteptr	
+}
 
 fn C.cJSON_CreateObject() &C.cJSON
 fn C.cJSON_CreateArray() &C.cJSON
-// fn C.cJSON_CreateBool(bool) &C.cJSON //json module already do
+fn C.cJSON_CreateBool(bool) &C.cJSON 
 fn C.cJSON_CreateTrue() &C.cJSON
 fn C.cJSON_CreateFalse() &C.cJSON
 fn C.cJSON_CreateNull() &C.cJSON
-// fn C.cJSON_CreateNumber() &C.cJSON 	//json module already do
-// fn C.cJSON_CreateString() &C.cJSON 	//json module already do
+fn C.cJSON_CreateNumber() &C.cJSON 	
+fn C.cJSON_CreateString() &C.cJSON 	
 fn C.cJSON_CreateRaw(byteptr) &C.cJSON
 
 fn C.cJSON_IsInvalid(voidptr) bool
 fn C.cJSON_IsFalse(voidptr) bool
-// fn C.cJSON_IsTrue(voidptr) bool 	//json module already do
+fn C.cJSON_IsTrue(voidptr) bool 	
 fn C.cJSON_IsBool(voidptr) bool
 fn C.cJSON_IsNull(voidptr) bool
 fn C.cJSON_IsNumber(voidptr) bool
@@ -31,10 +38,13 @@ fn C.cJSON_AddItemToArray(voidptr,voidptr)
 
 fn C.cJSON_Delete(voidptr)
 
-// fn C.cJSON_Parse() &C.cJSON 	//json module already do
+fn C.cJSON_Parse() &C.cJSON 	
+
+fn C.cJSON_GetObjectItem(&C.cJSON,byteptr) &C.cJSON
+fn C.cJSON_GetStringValue(&C.cJSON,byteptr) byteptr
 
 fn C.cJSON_Print() byteptr
-// fn C.cJSON_PrintUnformatted() byteptr //json module already do
+fn C.cJSON_PrintUnformatted() byteptr 
 
 // [inline]
 pub fn create_object() &C.cJSON {
@@ -91,7 +101,21 @@ pub fn add_item_to_array(obj &C.cJSON,item &C.cJSON) {
 	C.cJSON_AddItemToArray(obj,item)
 }
 
+pub fn get_string_value(obj &C.cJSON) string {
+	s:=C.cJSON_GetStringValue(obj)
+	return tos(s,C.strlen(s))
+}
+
+[inline]
+pub fn get_object_item(obj &C.cJSON,item string) &C.cJSON {
+	return C.cJSON_GetObjectItem(obj,item.str)
+}
+
 pub fn json_print(json &C.cJSON) string {
 	s := C.cJSON_Print(json)
 	return tos(s, C.strlen(s))
+}
+
+pub fn json_parse(s string) &C.cJSON {
+	return C.cJSON_Parse(s.str)
 }

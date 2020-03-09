@@ -4,7 +4,7 @@ wrap cJSON for vlang.
 
 V already has the standard json module base on cJSON,but only public json.encode() and json.decode(). 
 
-sometimes we may need to use cJSON directly.
+sometimes we may need to use [cJSON](https://github.com/DaveGamble/cJSON) directly.
 
 ## Installation
 
