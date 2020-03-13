@@ -119,3 +119,43 @@ pub fn json_print(json &C.cJSON) string {
 pub fn json_parse(s string) &C.cJSON {
 	return C.cJSON_Parse(s.str)
 }
+
+
+// ========= function alias =========
+pub fn (obj &C.cJSON) set(key string, item &C.cJSON) {
+	add_item_to_object(obj, key, item)
+}
+
+pub fn (obj &C.cJSON) add(item &C.cJSON) {
+	add_item_to_array(obj, item)
+}
+
+pub fn (obj &C.cJSON) dump() string {
+	return json_print(obj)
+}
+
+pub fn obj() &C.cJSON {
+	return create_object()
+}
+
+pub fn list() &C.cJSON {
+	return create_array()
+}
+
+pub fn str(val string) &C.cJSON {
+	return create_string(val)
+}
+
+pub fn num(val f64) &C.cJSON {
+	return create_number(val)
+}
+
+pub fn boolean(val bool) &C.cJSON {
+	return create_bool(val)
+}
+
+pub fn null() &C.cJSON {
+	return create_null()
+}
+
+// ==================================
