@@ -112,8 +112,8 @@ pub fn get_object_item(obj &C.cJSON,item string) &C.cJSON {
 	return C.cJSON_GetObjectItem(obj,item.str)
 }
 
-pub fn get_array_item(obj &C.cJSON,item string) &C.cJSON {
-	return C.cJSON_GetArrayItem(obj,item.str)
+pub fn get_array_item(obj &C.cJSON, index int) &C.cJSON {
+	return C.cJSON_GetArrayItem(obj, index)
 }
 
 pub fn json_print(json &C.cJSON) string {
@@ -165,11 +165,6 @@ pub fn (obj &C.cJSON) is_null(item string) bool {
 	value := obj.get(item)
 	return cJSON_IsNull(value)
 }
-
-pub fn (obj &C.cJSON) gets(item string) &C.cJSON {
-	return get_array_item(obj, item)
-}
-
 
 pub fn obj() &C.cJSON {
 	return create_object()

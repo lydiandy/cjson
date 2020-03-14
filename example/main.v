@@ -3,8 +3,37 @@ module main
 import cjson  // import lydiandy.cjson
 
 
+struct User {
+	name string
+	age  int
+}
+
+
 fn main() {
-	// print json 
+	// cjson print
+	u := User{name:'tom', age:18}
+	root := cjson.create_object()
+	cjson.add_item_to_object(root, "name", cjson.create_string(u.name))
+	cjson.add_item_to_object(root, "age", cjson.create_number(u.age))
+	json_str := cjson.json_print(root)
+	println(json_str)
+
+	// cjson parse
+	json_content:='{"name":"jack","age":22}'
+	res := cjson.json_parse(json_content)
+	
+	name := cjson.get_object_item(res, 'name')
+	age := cjson.get_object_item(res, 'age')
+	println(name.valuestring)
+	println(age.valueint)
+
+	// simple way to use cjson
+	simple_example()
+}
+
+
+fn simple_example() {
+	println('======== simple print json =========')
 	user := cjson.obj()
 	user.set("name", cjson.str("Tom"))
 	user.set("age", cjson.num(18))
@@ -12,9 +41,9 @@ fn main() {
 	user.set("gender", cjson.boolean(true))
 	user.set("password", cjson.null())
 
-	friends := cjson.list()
 	friend := cjson.obj()
 	friend.set("name", cjson.str("Jack"))
+	friends := cjson.list()
 	friends.add(friend)
 	user.set("friends", friends)
 
@@ -25,18 +54,16 @@ fn main() {
 	json_str := user.dump()
 	println(json_str)
 
-	// parse json 
+	println('======== simple parse json =========')
 	json_content := '{
         "name": "Tom",
         "age": 18,
         "score": 6.2,
         "gender": true,
         "password": null,
-        "friends": [
-			{
-				"name": "Jack"
-			}
-		],
+        "friends": [{
+			"name": "Jack"
+		}],
         "leader": {
 			"name": "Mike"
         }
@@ -48,8 +75,4 @@ fn main() {
 	println(obj.get_boolean("gender"))
 	println(obj.is_null("password"))
 	println(obj.get("leader").get_str("name"))
-	rs := obj.get("friends")
-	println(rs)
-	println(rs)
-	println(obj.get("leader"))
 }
