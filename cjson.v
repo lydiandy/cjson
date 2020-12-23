@@ -104,7 +104,7 @@ pub fn add_item_to_array(obj &C.cJSON,item &C.cJSON) {
 
 pub fn get_string_value(obj &C.cJSON) string {
 	s:=C.cJSON_GetStringValue(obj)
-	return tos(s,C.strlen(s))
+	return tos3(s)
 }
 
 [inline]
@@ -118,7 +118,7 @@ pub fn get_array_item(obj &C.cJSON, index int) &C.cJSON {
 
 pub fn json_print(json &C.cJSON) string {
 	s := C.cJSON_Print(json)
-	return tos(s, C.strlen(s))
+	return tos3(s)
 }
 
 pub fn json_parse(s string) &C.cJSON {
@@ -163,7 +163,7 @@ pub fn (obj &C.cJSON) get_boolean(item string) bool {
 
 pub fn (obj &C.cJSON) is_null(item string) bool {
 	value := obj.get(item)
-	return cJSON_IsNull(value)
+	return C.cJSON_IsNull(value)
 }
 
 pub fn obj() &C.cJSON {
