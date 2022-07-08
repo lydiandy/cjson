@@ -6,25 +6,25 @@ module cjson
 
 pub struct C.cJSON {
 pub:
-	@type int
+	@type       int
 	valueint    int
 	valuedouble f32
-	valuestring byteptr	
+	valuestring byteptr
 }
 
 fn C.cJSON_CreateObject() &C.cJSON
 fn C.cJSON_CreateArray() &C.cJSON
-fn C.cJSON_CreateBool(bool) &C.cJSON 
+fn C.cJSON_CreateBool(bool) &C.cJSON
 fn C.cJSON_CreateTrue() &C.cJSON
 fn C.cJSON_CreateFalse() &C.cJSON
 fn C.cJSON_CreateNull() &C.cJSON
-fn C.cJSON_CreateNumber() &C.cJSON 	
-fn C.cJSON_CreateString() &C.cJSON 	
+fn C.cJSON_CreateNumber(f64) &C.cJSON
+fn C.cJSON_CreateString(voidptr) &C.cJSON
 fn C.cJSON_CreateRaw(byteptr) &C.cJSON
 
 fn C.cJSON_IsInvalid(voidptr) bool
 fn C.cJSON_IsFalse(voidptr) bool
-fn C.cJSON_IsTrue(voidptr) bool 	
+fn C.cJSON_IsTrue(voidptr) bool
 fn C.cJSON_IsBool(voidptr) bool
 fn C.cJSON_IsNull(voidptr) bool
 fn C.cJSON_IsNumber(voidptr) bool
@@ -34,18 +34,18 @@ fn C.cJSON_IsObject(voidptr) bool
 fn C.cJSON_IsRaw(voidptr) bool
 
 fn C.cJSON_AddItemToObject(voidptr, byteptr, voidptr)
-fn C.cJSON_AddItemToArray(voidptr,voidptr)
+fn C.cJSON_AddItemToArray(voidptr, voidptr)
 
 fn C.cJSON_Delete(voidptr)
 
-fn C.cJSON_Parse() &C.cJSON 	
+fn C.cJSON_Parse(&C.cJSON) &C.cJSON
 
-fn C.cJSON_GetObjectItem(&C.cJSON,byteptr) &C.cJSON
-fn C.cJSON_GetArrayItem(&C.cJSON,byteptr) &C.cJSON
-fn C.cJSON_GetStringValue(&C.cJSON,byteptr) byteptr
+fn C.cJSON_GetObjectItem(&C.cJSON, byteptr) &C.cJSON
+fn C.cJSON_GetArrayItem(&C.cJSON, byteptr) &C.cJSON
+fn C.cJSON_GetStringValue(&C.cJSON) byteptr
 
-fn C.cJSON_Print() byteptr
-fn C.cJSON_PrintUnformatted() byteptr 
+fn C.cJSON_Print(&C.cJSON) byteptr
+fn C.cJSON_PrintUnformatted() byteptr
 
 // [inline]
 pub fn create_object() &C.cJSON {
@@ -93,23 +93,23 @@ pub fn delete(b voidptr) {
 }
 
 [inline]
-pub fn add_item_to_object(obj &C.cJSON,key string,item &C.cJSON) {
-	C.cJSON_AddItemToObject(obj,key.str,item)
+pub fn add_item_to_object(obj &C.cJSON, key string, item &C.cJSON) {
+	C.cJSON_AddItemToObject(obj, key.str, item)
 }
 
 [inline]
-pub fn add_item_to_array(obj &C.cJSON,item &C.cJSON) {
-	C.cJSON_AddItemToArray(obj,item)
+pub fn add_item_to_array(obj &C.cJSON, item &C.cJSON) {
+	C.cJSON_AddItemToArray(obj, item)
 }
 
 pub fn get_string_value(obj &C.cJSON) string {
-	s:=C.cJSON_GetStringValue(obj)
-	return tos3(s)
+	s := C.cJSON_GetStringValue(obj)
+	return unsafe { tos3(s) }
 }
 
 [inline]
-pub fn get_object_item(obj &C.cJSON,item string) &C.cJSON {
-	return C.cJSON_GetObjectItem(obj,item.str)
+pub fn get_object_item(obj &C.cJSON, item string) &C.cJSON {
+	return C.cJSON_GetObjectItem(obj, item.str)
 }
 
 pub fn get_array_item(obj &C.cJSON, index int) &C.cJSON {
@@ -118,13 +118,12 @@ pub fn get_array_item(obj &C.cJSON, index int) &C.cJSON {
 
 pub fn json_print(json &C.cJSON) string {
 	s := C.cJSON_Print(json)
-	return tos3(s)
+	return unsafe { tos3(s) }
 }
 
 pub fn json_parse(s string) &C.cJSON {
 	return C.cJSON_Parse(s.str)
 }
-
 
 // ========= function alias =========
 
@@ -136,7 +135,7 @@ pub fn (obj &C.cJSON) add(item &C.cJSON) {
 	add_item_to_array(obj, item)
 }
 
-pub fn (obj &C.cJSON) dump() string {
+pub fn (obj &C.cJSON) print() string {
 	return json_print(obj)
 }
 

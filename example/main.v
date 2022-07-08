@@ -51,7 +51,7 @@ fn simple_example() {
 	leader.set("name", cjson.str("Mike"))
 	user.set("leader", leader)
 
-	json_str := user.dump()
+	json_str := user.print()
 	println(json_str)
 
 	println('======== simple parse json =========')
